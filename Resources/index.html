@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Zetamac Local</title>
+  <link rel="stylesheet" href="app.css">
+</head>
+<body>
+  <div id="app-shell">
+    <header class="topbar">
+      <div class="brand"><span class="brand-mark">∑</span><div><strong>ZETAMAC</strong><small>LOCAL</small></div></div>
+      <nav aria-label="Main navigation">
+        <button class="nav-btn active" data-view="setup">Play</button>
+        <button class="nav-btn" data-view="history">History</button>
+        <button class="nav-btn" data-view="progress">Progress</button>
+        <button class="nav-btn" data-view="analytics">Analytics</button>
+      </nav>
+      <span class="local-pill"><span class="local-dot"></span> Saved on this Mac</span>
+    </header>
+
+    <main>
+      <section id="setup-view" class="view">
+        <div class="page-heading"><div><p class="eyebrow">MENTAL MATH TRAINING</p><h1>Arithmetic Game</h1><p>The Arithmetic Game is a fast-paced speed drill where you are given two minutes to solve as many arithmetic problems as you can.</p></div></div>
+        <div class="setup-layout">
+          <section class="card settings-card">
+            <div class="card-heading"><div><h2>Game settings</h2><p>Classic Zetamac rules, adjustable to your practice.</p></div><button id="reset-settings" class="text-button">Reset defaults</button></div>
+            <div class="preset-row"><span class="field-label">Quick presets</span><div class="segmented"><button class="preset active" data-preset="classic">Classic · 2 min</button><button class="preset" data-preset="sprint">Sprint · 1 min</button><button class="preset" data-preset="custom">Custom</button></div></div>
+            <div class="settings-section-title">OPERATIONS & RANGES</div>
+            <div class="operation-row"><label class="operation-name"><input id="op-add" type="checkbox" checked><span class="op-icon blue">+</span> Addition</label><div class="range-fields"><span>(</span><input id="add-a-min" aria-label="Addition first minimum" type="number" min="1" max="9999" value="2"><span>to</span><input id="add-a-max" aria-label="Addition first maximum" type="number" min="1" max="9999" value="100"><span>) + (</span><input id="add-b-min" aria-label="Addition second minimum" type="number" min="1" max="9999" value="2"><span>to</span><input id="add-b-max" aria-label="Addition second maximum" type="number" min="1" max="9999" value="100"><span>)</span></div></div>
+            <div class="operation-row"><label class="operation-name"><input id="op-sub" type="checkbox" checked><span class="op-icon violet">−</span> Subtraction</label><p class="rule-note">Addition problems in reverse</p></div>
+            <div class="operation-row"><label class="operation-name"><input id="op-mul" type="checkbox" checked><span class="op-icon coral">×</span> Multiplication</label><div class="range-fields"><span>(</span><input id="mul-a-min" aria-label="Multiplication first minimum" type="number" min="1" max="9999" value="2"><span>to</span><input id="mul-a-max" aria-label="Multiplication first maximum" type="number" min="1" max="9999" value="12"><span>) × (</span><input id="mul-b-min" aria-label="Multiplication second minimum" type="number" min="1" max="9999" value="2"><span>to</span><input id="mul-b-max" aria-label="Multiplication second maximum" type="number" min="1" max="9999" value="100"><span>)</span></div></div>
+            <div class="operation-row"><label class="operation-name"><input id="op-div" type="checkbox" checked><span class="op-icon green">÷</span> Division</label><p class="rule-note">Multiplication problems in reverse</p></div>
+            <div class="duration-row"><label for="duration" class="field-label">Duration</label><select id="duration"><option value="30">30 seconds</option><option value="60">60 seconds</option><option value="120" selected>120 seconds</option><option value="300">300 seconds</option><option value="600">600 seconds</option></select><span class="input-hint">Timer starts when you press Start.</span></div>
+            <div id="settings-error" class="inline-error" role="alert" hidden></div>
+            <div class="start-row"><button class="secondary-button" data-view="history">View History</button><button id="start-zen" class="secondary-button">Zen Mode</button><button id="start-timed" class="primary-button">Start</button></div>
+          </section>
+          <aside class="setup-side">
+            <section class="card snapshot-card"><div class="card-heading"><div><h2>Your Statistics</h2><p>From completed timed runs</p></div></div><div class="snapshot-grid"><div><span>PERSONAL BEST</span><strong id="menu-best">—</strong></div><div><span>LATEST SCORE</span><strong id="menu-latest">—</strong></div><div><span>LAST 10 AVG</span><strong id="menu-average">—</strong></div><div><span>RUNS SAVED</span><strong id="menu-count">0</strong></div></div><button class="subtle-link" data-view="progress">See your progress →</button></section>
+            <section class="card practice-card"><div class="practice-icon">⚡</div><h2>Focused practice</h2><p>Train one operation without a timer. Aim to solve five questions under your target speed.</p><div class="practice-controls"><select id="practice-op" aria-label="Practice operation"><option value="add">Addition</option><option value="sub">Subtraction</option><option value="mul">Multiplication</option><option value="div">Division</option></select><label><input id="practice-target" type="number" min="1" max="60" value="5"> <span>sec target</span></label></div><button id="start-practice" class="secondary-button full">Start practice →</button></section>
+          </aside>
+        </div>
+      </section>
+
+      <section id="game-view" class="view game-view" hidden>
+        <div class="game-top"><div class="game-metric"><span id="game-time-label">Seconds left:</span> <strong id="game-time">120</strong></div><div class="game-mode" id="game-mode">TIMED RUN</div><div class="game-metric right"><span>Score:</span> <strong id="game-score">0</strong></div></div>
+        <div class="game-band"><div class="problem-line"><span id="game-expression">2 + 2</span><span class="equals">=</span><input id="answer" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Answer"></div></div>
+        <div class="game-bottom"><div id="practice-progress" hidden>Under target: <strong id="practice-mastered">0 / 5</strong></div><span>Type the answer to continue</span><button id="end-run" class="text-button">End run</button></div>
+      </section>
+
+      <section id="result-view" class="view" hidden>
+        <div class="result-hero card"><p class="eyebrow">RUN COMPLETE</p><h1 id="result-score">0</h1><p id="result-subtitle">problems solved</p><div id="result-message" class="result-message"></div><div class="result-actions"><button id="play-again" class="primary-button">Play again →</button><button class="secondary-button" data-view="history">View history</button><button class="secondary-button" data-view="progress">Progress graph</button></div></div>
+        <div id="result-detail" class="result-detail"></div>
+      </section>
+
+      <section id="history-view" class="view" hidden><div class="page-heading"><div><p class="eyebrow">YOUR RECORD</p><h1>Session history</h1><p>Every run, saved locally.</p></div><div class="history-actions"><button class="secondary-button export-button">Export CSV</button><button id="delete-all-runs" class="secondary-button danger-button">Delete all</button></div></div><div class="history-layout"><div class="card history-list"><div class="list-heading"><strong>Runs</strong><span id="history-count">0 saved</span></div><div id="history-items"></div></div><div id="history-detail" class="card history-detail"></div></div></section>
+
+      <section id="progress-view" class="view" hidden><div class="page-heading"><div><p class="eyebrow">THE LONG VIEW</p><h1>Progress</h1><p>Track improvement across comparable timed runs.</p></div><button class="secondary-button export-button">Export CSV</button></div><div class="filter-bar card"><label>Duration <select id="progress-duration"></select></label><label>Settings <select id="progress-settings"></select></label><label>Period <select id="progress-period"><option value="all">All time</option><option value="30">Last 30 days</option><option value="7">Last 7 days</option></select></label></div><div id="progress-content"></div></section>
+
+      <section id="analytics-view" class="view" hidden><div class="page-heading"><div><p class="eyebrow">GO DEEPER</p><h1>Analytics</h1><p>See where you gain speed and where you lose it.</p></div></div><div id="analytics-content"></div></section>
+    </main>
+    <div id="confirm-overlay" class="confirm-overlay" hidden>
+      <div class="confirm-panel" role="alertdialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-message">
+        <h2 id="confirm-title">Delete run?</h2>
+        <p id="confirm-message"></p>
+        <div class="confirm-actions"><button id="cancel-delete" class="secondary-button">Cancel</button><button id="confirm-delete" class="secondary-button danger-button">Delete</button></div>
+      </div>
+    </div>
+    <div id="toast" role="status" hidden></div>
+  </div>
+  <script src="core.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

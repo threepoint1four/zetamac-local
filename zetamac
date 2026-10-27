@@ -1,0 +1,8 @@
+#!/bin/zsh
+set -euo pipefail
+project_dir="${0:A:h}"
+app_path="$project_dir/dist/Zetamac Local.app"
+if [[ ! -d "$app_path" ]]; then
+  "$project_dir/build.sh" >/dev/null
+fi
+open -a "$app_path"
