@@ -23,6 +23,8 @@ ln -s "$PWD/zetamac" ~/.local/bin/zetamac
 zetamac
 ```
 
+If `zetamac` isn't found, add `export PATH="$HOME/.local/bin:$PATH"` to `~/.zshrc` and open a new Terminal window.
+
 Run history lives in `~/Library/Application Support/Zetamac Local/runs.sqlite3`.
 
 Inspired by [Zetamac](https://arithmetic.zetamac.com/) and [sryaengbl/Zetamac](https://github.com/sryaengbl/Zetamac).
