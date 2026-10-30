@@ -4,6 +4,8 @@ A Zetamac-style arithmetic game for Mac. It works offline and keeps your runs on
 
 Timed practice, Zen mode, run history, a progress graph, and basic stats. You can delete runs and export them as CSV.
 
+Escape stops any run and shows its stats without saving it. The End run button does the same for timed runs. In Zen mode, use Finish and save to keep the session.
+
 ## Run it
 
 On a Mac with Xcode Command Line Tools installed:

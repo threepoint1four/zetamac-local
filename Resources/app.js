@@ -156,6 +156,8 @@
     $('game-mode').textContent = mode === 'timed' ? 'TIMED RUN' : mode === 'zen' ? 'ZEN MODE' : `${C.OP_NAMES[practiceOp].toUpperCase()} PRACTICE`;
     $('game-time-label').textContent = mode === 'timed' ? 'Seconds left:' : 'Seconds elapsed:';
     $('game-score').textContent = '0';
+    $('game-hint').textContent = mode === 'zen' ? 'Esc: leave without saving' : 'Esc: end without saving';
+    $('end-run').textContent = mode === 'zen' ? 'Finish and save' : 'End run';
     $('practice-progress').hidden = mode !== 'practice';
     $('practice-mastered').textContent = '0 / 5';
     showView('game');
@@ -202,21 +204,23 @@
     } else $('game-time').textContent = Math.floor((now - active.startMs) / 1000);
   }
 
-  function finishRun(manual) {
+  function finishRun(stoppedEarly) {
     const active = state.active;
     if (!active) return;
     clearInterval(state.timer); state.timer = null;
     const elapsed = Math.max(0, (performance.now() - active.startMs) / 1000);
     const run = {
       id: active.id, startedAt: active.startedAt,
-      mode: manual && active.mode === 'timed' ? 'aborted' : active.mode,
-      duration: active.duration, elapsed: active.mode === 'timed' && !manual ? active.duration : elapsed,
+      mode: stoppedEarly && active.mode === 'timed' ? 'aborted' : active.mode,
+      duration: active.duration, elapsed: active.mode === 'timed' && !stoppedEarly ? active.duration : elapsed,
       settings: active.settings, score: active.score, questions: active.questions,
     };
     state.active = null;
-    state.selectedRunId = run.id;
-    post('saveRun', { run });
-    renderResult(run, { manual, target: active.target, underTarget: active.underTarget });
+    if (!stoppedEarly) {
+      state.selectedRunId = run.id;
+      post('saveRun', { run });
+    }
+    renderResult(run, { stoppedEarly, target: active.target, underTarget: active.underTarget });
     showView('result');
   }
 
@@ -250,9 +254,10 @@
   }
 
   function renderResult(run, context) {
+    $('result-heading').textContent = context.stoppedEarly ? 'RUN STOPPED' : 'RUN COMPLETE';
     $('result-score').textContent = run.score;
     $('result-subtitle').textContent = run.score === 1 ? 'problem solved' : 'problems solved';
-    $('result-message').textContent = run.mode === 'aborted' ? 'Stopped early · saved in History, excluded from timed progress' : run.mode === 'practice' ? `${context.underTarget} questions under ${context.target}s` : `${fmt(run.elapsed, 0)} seconds · ${C.settingsLabel(run.settings)}`;
+    $('result-message').textContent = context.stoppedEarly ? 'Stopped early · results shown here only, not saved' : run.mode === 'practice' ? `${context.underTarget} questions under ${context.target}s` : `${fmt(run.elapsed, 0)} seconds · ${C.settingsLabel(run.settings)}`;
     $('result-detail').innerHTML = `<div class="card history-detail">${runDetailHTML(run)}</div>`;
     $('play-again').onclick = () => startRun(run.mode === 'aborted' ? 'timed' : run.mode);
   }
@@ -369,7 +374,7 @@
   $('start-zen').addEventListener('click', () => startRun('zen'));
   $('start-practice').addEventListener('click', () => startRun('practice'));
   $('answer').addEventListener('input', onAnswer);
-  $('end-run').addEventListener('click', () => finishRun(true));
+  $('end-run').addEventListener('click', () => finishRun(state.active?.mode !== 'zen'));
   $('progress-duration').addEventListener('change', event => { state.durationFilter = Number(event.target.value); state.settingsFilter = null; renderProgress(); renderAnalytics(); });
   $('progress-settings').addEventListener('change', event => { state.settingsFilter = JSON.parse(event.target.dataset.keys)[Number(event.target.value)]; renderProgress(); renderAnalytics(); });
   $('progress-period').addEventListener('change', event => { state.periodFilter = event.target.value; renderProgress(); renderAnalytics(); });
@@ -378,7 +383,11 @@
   $('cancel-delete').addEventListener('click', closeDeletePrompt);
   $('confirm-delete').addEventListener('click', confirmDelete);
   $('confirm-overlay').addEventListener('click', event => { if (event.target === $('confirm-overlay')) closeDeletePrompt(); });
-  document.addEventListener('keydown', event => { if (event.key === 'Escape' && !$('confirm-overlay').hidden) closeDeletePrompt(); });
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Escape') return;
+    if (!$('confirm-overlay').hidden) { closeDeletePrompt(); return; }
+    if (state.active) { event.preventDefault(); finishRun(true); }
+  });
   document.body.dataset.view = 'setup';
   try { const saved = JSON.parse(localStorage.getItem('zetamac-local-settings') || 'null'); if (saved) writeSettings(C.validatedSettings(saved)); } catch (_) {}
   post('ready');

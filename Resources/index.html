@@ -45,11 +45,11 @@
       <section id="game-view" class="view game-view" hidden>
         <div class="game-top"><div class="game-metric"><span id="game-time-label">Seconds left:</span> <strong id="game-time">120</strong></div><div class="game-mode" id="game-mode">TIMED RUN</div><div class="game-metric right"><span>Score:</span> <strong id="game-score">0</strong></div></div>
         <div class="game-band"><div class="problem-line"><span id="game-expression">2 + 2</span><span class="equals">=</span><input id="answer" inputmode="numeric" autocomplete="off" autocorrect="off" spellcheck="false" aria-label="Answer"></div></div>
-        <div class="game-bottom"><div id="practice-progress" hidden>Under target: <strong id="practice-mastered">0 / 5</strong></div><span>Type the answer to continue</span><button id="end-run" class="text-button">End run</button></div>
+        <div class="game-bottom"><div id="practice-progress" hidden>Under target: <strong id="practice-mastered">0 / 5</strong></div><span id="game-hint">Esc: end without saving</span><button id="end-run" class="text-button">End run</button></div>
       </section>
 
       <section id="result-view" class="view" hidden>
-        <div class="result-hero card"><p class="eyebrow">RUN COMPLETE</p><h1 id="result-score">0</h1><p id="result-subtitle">problems solved</p><div id="result-message" class="result-message"></div><div class="result-actions"><button id="play-again" class="primary-button">Play again →</button><button class="secondary-button" data-view="history">View history</button><button class="secondary-button" data-view="progress">Progress graph</button></div></div>
+        <div class="result-hero card"><p id="result-heading" class="eyebrow">RUN COMPLETE</p><h1 id="result-score">0</h1><p id="result-subtitle">problems solved</p><div id="result-message" class="result-message"></div><div class="result-actions"><button id="play-again" class="primary-button">Play again →</button><button class="secondary-button" data-view="history">View history</button><button class="secondary-button" data-view="progress">Progress graph</button></div></div>
         <div id="result-detail" class="result-detail"></div>
       </section>
 
